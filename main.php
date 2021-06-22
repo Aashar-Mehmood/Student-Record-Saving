@@ -10,10 +10,7 @@
 </head>
 
 <body>
-  <header>
-    <h1>Student Record Saving System</h1>
-    <h2>PHP and MySql</h2>
-  </header>
+  <?php include('./header.php') ?>
   <main>
     <form action="./insert.php" method="POST" id="insert">
       <h2>Press tab to go in next input field</h2>
