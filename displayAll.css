@@ -1,0 +1,29 @@
+@import "./headerAndFooter.css";
+header {
+  border-bottom: 1px solid #000;
+}
+main {
+  padding: 30px 0;
+  background-color: #eee;
+}
+table {
+  margin: 0 auto;
+  padding: 20px;
+  width: 80%;
+  color: white;
+}
+td,
+th {
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 15px 0;
+}
+tr:nth-child(even) {
+  background-color: #32ac71;
+}
+tr:nth-child(odd) {
+  background-color: #704bb0;
+}
+footer {
+  border-top: 1px solid #000;
+}
