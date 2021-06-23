@@ -25,7 +25,12 @@
       showResults($data1);
     }
 
-    if ((isset($_POST["search"]) || isset($_POST["delete"])) && $_POST["targetRollNo"] == NULL) {
+    if (
+      (isset($_POST["search"]) || isset($_POST["delete"]) ||
+        isset($_POST["total"])  || isset($_POST["avg"]) ||
+        isset($_POST["min"])    || isset($_POST["max"]))
+      && $_POST["targetRollNo"] == NULL
+    ) {
       echo "<script>alert('Enter Roll number to be searched / delete');</script>";
       header("refresh:0.6;url=main.php");
       return;
