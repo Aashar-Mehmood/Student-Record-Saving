@@ -18,40 +18,50 @@
     // Check connection
     if (mysqli_connect_errno()) {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
+      return;
     }
-
     if (isset($_POST["printAll"])) {
       $data1 = mysqli_query($con, "SELECT * FROM `students_data_tb`");
       showResults($data1);
+      return;
     }
 
-    if (
-      (isset($_POST["search"]) || isset($_POST["delete"]) ||
-        isset($_POST["total"])  || isset($_POST["avg"]) ||
-        isset($_POST["min"])    || isset($_POST["max"]))
-      && $_POST["targetRollNo"] == NULL
-    ) {
+    if ($_POST["targetRollNo"] == NULL) {
       echo "<script>alert('Enter Roll number to be searched / delete');</script>";
       header("refresh:0.6;url=main.php");
       return;
-    } else if (isset($_POST["search"]) && isset($_POST["targetRollNo"])) {
+    } else {
       $rollNo = $_POST["targetRollNo"];
-      $data2 = mysqli_query(
-        $con,
-        "SELECT * FROM `students_data_tb`
-        WHERE `rollNumber` = '$rollNo';"
-      );
-      showResults($data2);
-    } else if (isset($_POST["targetRollNo"]) && isset($_POST["delete"])) {
-      $rollNo = $_POST["targetRollNo"];
-      $result = mysqli_query(
-        $con,
-        "DELETE FROM `students_data_tb`
-        WHERE `rollNumber` = '$rollNo'; "
-      );
-      if ($result) {
-        echo "Deleted The Result of Enterd Roll Number";
-        header("refresh:0.4;url=main.php");
+
+      if (isset($_POST["search"])) {
+        $data2 = mysqli_query(
+          $con,
+          "SELECT * FROM `students_data_tb` WHERE `rollNumber` = '$rollNo';"
+        );
+        showResults($data2);
+      }
+      if (isset($_POST["delete"])) {
+        $result = mysqli_query(
+          $con,
+          "DELETE FROM `students_data_tb`
+          WHERE `rollNumber` = '$rollNo'; "
+        );
+        if ($result) {
+          echo "Deleted The Result of Enterd Roll Number";
+          header("refresh:1;url=main.php");
+        }
+      }
+      if (isset($_POST["total"])) {
+        aggregate("Total Marks", $rollNo, $con);
+      }
+      if (isset($_POST["avg"])) {
+        aggregate("Average Marks", $rollNo, $con);
+      }
+      if (isset($_POST["min"])) {
+        aggregate("Min Marks", $rollNo, $con);
+      }
+      if (isset($_POST["max"])) {
+        aggregate("Max Marks", $rollNo, $con);
       }
     }
 
@@ -62,18 +72,10 @@
       echo
       "<table>
         <tr>
-          <th>Name</th>
-          <th>Roll No.</th>
-          <th>Subj1</th>
-          <th>Subj2</th>
-          <th>Subj3</th>
-          <th>Subj4</th>
-          <th>Subj5</th>
-          <th>Subj6</th>
-          <th>Subj7</th>
-          <th>Subj8</th>
-          <th>Subj9</th>
-          <th>Subj10</th>
+          <th>Name</th>   <th>Roll No.</th> <th>Subj1</th> 
+          <th>Subj2</th>  <th>Subj3</th>    <th>Subj4</th> 
+          <th>Subj5</th>  <th>Subj6</th>    <th>Subj7</th> 
+          <th>Subj8</th>  <th>Subj9</th>   <th>Subj10</th>
         </tr>";
       while ($row = mysqli_fetch_array($result)) {
         echo "<tr>";
@@ -92,6 +94,57 @@
         echo "</tr>";
       }
       echo "</table>";
+    }
+    function aggregate($aggrType, $rollNo, $con)
+    {
+      $data = mysqli_query(
+        $con,
+        "SELECT * FROM `students_data_tb` WHERE `rollNumber` = '$rollNo';"
+      );
+      $arr = mysqli_fetch_array($data);
+      $name = $arr[0];
+      $rollNumber = $arr[1];
+      $thirdCol = null;
+      $sum = 0;
+      $max = 0;
+      $min = 0;
+      for ($i = 2; $i < 12; $i++) {
+        $sum += (float)$arr[$i];
+      }
+      if ($aggrType == "Total Marks") {
+        $thirdCol = $sum;
+      } else if ($aggrType == "Average Marks") {
+        $thirdCol = $sum / 10;
+      } else if ($aggrType == "Min Marks") {
+        $min = $arr[2];
+        for ($i = 3; $i < 12; $i++) {
+          if ($arr[$i] < $min) {
+            $min = $arr[$i];
+          }
+        }
+        $thirdCol = $min;
+      } else if ($aggrType == "Max Marks") {
+        $max = $arr[2];
+        for ($i = 3; $i < 12; $i++) {
+          if ($arr[$i] > $max) {
+            $max = $arr[$i];
+          }
+        }
+        $thirdCol = $max;
+      }
+      echo
+      "<table>
+        <tr>
+          <th>Name</th>
+          <th>Roll No.</th>
+          <th>$aggrType</th>
+        </tr>
+        <tr>
+          <td>$name</td>
+          <td>$rollNumber</td>
+          <td>$thirdCol</td>
+        </tr>
+        </table>";
     }
     ?>
   </main>

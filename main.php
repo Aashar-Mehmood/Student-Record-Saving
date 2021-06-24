@@ -71,7 +71,7 @@
       <input type="text" name="targetRollNo" placeholder="Enter Roll Number of Student to be Searched" />
       <button name="search" title="Search a particular Record">Search Record</button>
       <button name="delete" title="Delete a particular Record">Delete Record</button>
-      <button name="max" title="total Marks in All Subjects">Total Marks</button>
+      <button name="total" title="total Marks in All Subjects">Total Marks</button>
       <button name="avg" title="Average Marks">Avg Marks</button>
       <button name="min" title="Minimum Marks">Min Marks</button>
       <button name="max" title="Maximum Marks">Max Marks</button>
